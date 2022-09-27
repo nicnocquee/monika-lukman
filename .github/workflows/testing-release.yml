@@ -41,7 +41,7 @@ jobs:
           DATE=$(date '+%Y%m%d')
           NEXT_VERSION=0.0.0-testing-${DATE}-${SHORT_SHA}
           echo ::set-output name=NEXT_VERSION::${NEXT_VERSION}
-          git checkout -b "v${inputs.version}"
+          git checkout -b "v${{ inputs.version }}"
 
       - name: 📦 Pack
         run: npm pack

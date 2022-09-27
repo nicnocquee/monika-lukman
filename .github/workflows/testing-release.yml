@@ -57,6 +57,30 @@ jobs:
         run: npm run prod_test
         if: steps.version.outputs.NEXT_VERSION
 
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            hyperjump/monika
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=semver,pattern="v${{ inputs.version }}""
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{secrets.HYPERJUMP_DOCKER_USERNAME}}
+          password: ${{secrets.HYPERJUMP_DOCKER_PASSWORD}}
+
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+
       - name: 💬 Notify Teams
         if: steps.version.outputs.NEXT_VERSION
         uses: joelwmale/webhook-action@fd99bb3b8272237103e349e9bb4d9b0ead9a217c

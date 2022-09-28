@@ -42,7 +42,7 @@ jobs:
           if [ -z "$(git status --porcelain)" ]; then
               echo "✨"
           fi
-          npm version ${{ inputs.version }}
+          npm version --no-git-tag-version
 
       - name: 📦 Pack
         run: npm pack

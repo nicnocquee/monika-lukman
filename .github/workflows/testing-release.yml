@@ -13,8 +13,6 @@ jobs:
     name: Testing Release
     if: github.repository == 'lukman7788/monika'
     runs-on: ubuntu-latest
-    outputs:
-      VERSION: ${{ inputs.version }}
     steps:
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
@@ -44,19 +42,19 @@ jobs:
           if [ -z "$(git status --porcelain)" ]; then
               echo "✨"
           fi
-          npm version ${VERSION}
+          npm version ${{ inputs.version }}
 
       - name: 📦 Pack
         run: npm pack
-        if: steps.version.outputs.VERSION
+        if: inputs.version
 
       - name: 📥 Install Pack
         run: npm install -g ./hyperjumptech-monika-*.tgz
-        if: steps.version.outputs.VERSION
+        if: inputs.version
 
       - name: 🧪 Run Production Test
         run: npm run prod_test
-        if: steps.version.outputs.VERSION
+        if: inputs.version
 
       - name: Docker meta
         id: meta
@@ -67,7 +65,7 @@ jobs:
             lukman7788/monika
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=semver,pattern=${{ inputs.version }}
+            type=pep440,pattern={{version}},value=${{ inputs.version }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -93,4 +91,4 @@ jobs:
         uses: joelwmale/webhook-action@fd99bb3b8272237103e349e9bb4d9b0ead9a217c
         with:
           url: ${{secrets.HYPERJUMP_TEAMS_SYMON_WEBHOOK}}
-          body: '{"title": "Monika NPM Version Release", "Text": "Version: ${{ steps.version.outputs.NEXT_VERSION }}"}'
+          body: '{"title": "Docker Release from Tag", "Text": "Version: ${{ inputs.version }}"}'

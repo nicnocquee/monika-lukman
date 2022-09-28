@@ -41,6 +41,9 @@ jobs:
           git fetch --all --tags
           git rev-parse ${{ inputs.version }}
           echo ::set-output name=VERSION::${ inputs.version }
+          if [ -z "$(git status --porcelain)" ]; then
+              echo "✨"
+          fi
           npm version ${VERSION}
 
       - name: 📦 Pack

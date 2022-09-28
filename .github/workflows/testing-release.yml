@@ -62,7 +62,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            lukman7788/monika
+            nicnocquee/monika-test
           # generate Docker tags based on the following events/attributes
           tags: |
             type=raw,value=${{ inputs.version }}
@@ -87,10 +87,3 @@ jobs:
           push: true
           tags: ${{ inputs.version }}
           labels: ${{ inputs.version }}
-
-      - name: 💬 Notify Teams
-        if: steps.version.outputs.VERSION
-        uses: joelwmale/webhook-action@fd99bb3b8272237103e349e9bb4d9b0ead9a217c
-        with:
-          url: ${{secrets.HYPERJUMP_TEAMS_SYMON_WEBHOOK}}
-          body: '{"title": "Docker Release from Tag", "Text": "Version: ${{ inputs.version }}"}'

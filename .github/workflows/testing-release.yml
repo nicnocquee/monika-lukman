@@ -39,10 +39,9 @@ jobs:
           git config --local user.email "monika@hyperjump.tech"
           git config --local user.name "Monika Bot"
           git fetch --all --tags
-          SHA=$(git rev-parse ${{ inputs.version }})
-          SHORT_SHA=${SHA::7}
-          DATE=$(date '+%Y%m%d')
-          echo ::set-output name=${{ inputs.version }}
+          git rev-parse ${{ inputs.version }}
+          echo ::set-output name=VERSION::${ inputs.version }
+          npm version ${VERSION}
 
       - name: 📦 Pack
         run: npm pack
